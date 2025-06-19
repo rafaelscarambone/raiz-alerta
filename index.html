@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RaizAlerta - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Cabeçalho Principal -->
+    <header class="main-header">
+        <div class="container">
+            <h1>🌱 RaizAlerta</h1>
+            <nav class="main-nav">
+                <a href="index.html" class="active">Dashboard</a>
+                <a href="localizacao.html">Localização</a>
+                <a href="guia.html">Guia</a>
+                <a href="configuracoes.html">Configurações</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Área Principal do Dashboard -->
+    <main class="dashboard-main">
+        <div class="container">
+            <!-- Status de Conexão -->
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-indicator"></span>
+                <span class="status-text">Verificando conexão...</span>
+            </div>
+
+            <!-- Grid de Sensores -->
+            <div class="sensors-grid">
+                <!-- Sensor 1 -->
+                <div class="sensor-card">
+                    <h3>Sensor 1</h3>
+                    <div class="sensor-value" id="sensor1Value">--</div>
+                    <div class="sensor-unit">% Umidade</div>
+                </div>
+
+                <!-- Sensor 2 -->
+                <div class="sensor-card">
+                    <h3>Sensor 2</h3>
+                    <div class="sensor-value" id="sensor2Value">--</div>
+                    <div class="sensor-unit">% Umidade</div>
+                </div>
+
+                <!-- Média -->
+                <div class="sensor-card highlight">
+                    <h3>Média</h3>
+                    <div class="sensor-value" id="averageValue">--</div>
+                    <div class="sensor-unit">% Umidade</div>
+                </div>
+            </div>
+
+            <!-- Indicador de Faixa -->
+            <div class="range-indicator" id="rangeIndicator">
+                <h3>Status da Umidade</h3>
+                <div class="range-display" id="rangeDisplay">
+                    <span class="range-icon">⚪</span>
+                    <span class="range-text">Aguardando dados...</span>
+                </div>
+                <div class="range-description" id="rangeDescription"></div>
+            </div>
+
+            <!-- Barra de Progresso Visual -->
+            <div class="progress-container">
+                <h3>Nível de Umidade</h3>
+                <div class="progress-wrapper">
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill"></div>
+                        <div class="progress-marker" id="progressMarker"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <span>0%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>75%</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="updateButton">
+                    <span class="btn-icon">🔄</span>
+                    Atualizar Dados
+                </button>
+                <button class="btn btn-secondary" id="autoUpdateToggle">
+                    <span class="btn-icon">⏱️</span>
+                    <span id="autoUpdateText">Ativar Auto-Atualização</span>
+                </button>
+            </div>
+
+            <!-- Última Atualização -->
+            <div class="last-update">
+                <p>Última atualização: <span id="lastUpdateTime">--</span></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>RaizAlerta © 2025 - Sistema de Monitoramento de Umidade do Solo</p>
+            <p>ESP32 IP: <span id="esp32IP">Não configurado</span></p>
+        </div>
+    </footer>
+
+    <!-- Overlay de Alerta Crítico -->
+    <div class="critical-alert-overlay" id="criticalAlertOverlay">
+        <div class="critical-alert-content">
+            <h2>⚠️ ALERTA CRÍTICO ⚠️</h2>
+            <p>Nível de umidade em estado crítico!</p>
+            <p>Siga os procedimentos de segurança imediatamente.</p>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

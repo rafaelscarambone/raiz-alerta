@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RaizAlerta - Guia e Segurança</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="guia.css">
+</head>
+<body>
+    <!-- Cabeçalho Principal -->
+    <header class="main-header">
+        <div class="container">
+            <h1>🌱 RaizAlerta</h1>
+            <nav class="main-nav">
+                <a href="index.html">Dashboard</a>
+                <a href="localizacao.html">Localização</a>
+                <a href="guia.html" class="active">Guia</a>
+                <a href="configuracoes.html">Configurações</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Área Principal -->
+    <main class="guide-main">
+        <div class="container">
+            <h2>📚 Guia e Procedimentos de Segurança</h2>
+            
+            <!-- Seção: Entendendo a Umidade -->
+            <section class="guide-section">
+                <h3>💧 Entendendo os Níveis de Umidade</h3>
+                <p class="section-intro">
+                                        O sistema RaizAlerta classifica a umidade do solo em quatro faixas distintas,
+                    cada uma indicando um nível de risco diferente:
+                </p>
+                
+                <div class="humidity-levels">
+                    <!-- Nível: Muito Seco -->
+                    <div class="level-card very-dry">
+                        <div class="level-header">
+                            <span class="level-icon">🏜️</span>
+                            <h4>Muito Seco</h4>
+                            <span class="level-range">Abaixo de 30%</span>
+                        </div>
+                        <div class="level-content">
+                            <p><strong>Descrição:</strong> Solo extremamente seco, sem risco de deslizamento.</p>
+                            <p><strong>Ação:</strong> Monitoramento normal, irrigação pode ser necessária para plantas.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Nível: Normal -->
+                    <div class="level-card normal">
+                        <div class="level-header">
+                            <span class="level-icon">✅</span>
+                            <h4>Normal</h4>
+                            <span class="level-range">30% - 50%</span>
+                        </div>
+                        <div class="level-content">
+                            <p><strong>Descrição:</strong> Umidade ideal, solo estável.</p>
+                            <p><strong>Ação:</strong> Nenhuma ação necessária, condições seguras.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Nível: Alerta -->
+                    <div class="level-card alert">
+                        <div class="level-header">
+                            <span class="level-icon">⚠️</span>
+                            <h4>Alerta</h4>
+                            <span class="level-range">50% - 70%</span>
+                        </div>
+                        <div class="level-content">
+                            <p><strong>Descrição:</strong> Solo úmido, risco moderado de instabilidade.</p>
+                            <p><strong>Ação:</strong> Aumentar frequência de monitoramento, preparar plano de contingência.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Nível: Crítico -->
+                    <div class="level-card critical">
+                        <div class="level-header">
+                            <span class="level-icon">🚨</span>
+                            <h4>Crítico</h4>
+                            <span class="level-range">Acima de 70%</span>
+                        </div>
+                        <div class="level-content">
+                            <p><strong>Descrição:</strong> Solo saturado, alto risco de deslizamento.</p>
+                            <p><strong>Ação:</strong> EVACUAÇÃO IMEDIATA! Acionar autoridades competentes.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Seção: Procedimentos de Segurança -->
+            <section class="guide-section">
+                <h3>🛡️ Procedimentos de Segurança</h3>
+                
+                <div class="procedures">
+                    <div class="procedure-card">
+                        <h4>📋 Procedimento Geral</h4>
+                        <ol>
+                            <li>Monitore o dashboard regularmente</li>
+                            <li>Configure alertas para notificações automáticas</li>
+                            <li>Mantenha contatos de emergência atualizados</li>
+                            <li>Conheça as rotas de evacuação da área</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="procedure-card emergency">
+                        <h4>🚨 Procedimento de Emergência (Nível Crítico)</h4>
+                        <ol>
+                            <li><strong>NÃO IGNORE O ALERTA!</strong></li>
+                            <li>Evacue imediatamente a área de risco</li>
+                            <li>Leve apenas documentos e itens essenciais</li>
+                            <li>Siga as rotas de evacuação estabelecidas</li>
+                            <li>Contate a Defesa Civil: <strong>199</strong></li>
+                            <li>Não retorne até autorização oficial</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Seção: Como Usar o Site -->
+            <section class="guide-section">
+                <h3>💻 Como Usar o Site</h3>
+                
+                <div class="usage-guide">
+                    <div class="usage-card">
+                        <h4>Dashboard</h4>
+                        <p>Página principal com monitoramento em tempo real:</p>
+                        <ul>
+                            <li>Visualize leituras dos sensores</li>
+                            <li>Acompanhe a média de umidade</li>
+                            <li>Receba alertas visuais de perigo</li>
+                            <li>Atualize dados manualmente ou automaticamente</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="usage-card">
+                        <h4>Localização</h4>
+                        <p>Informações sobre a área monitorada:</p>
+                        <ul>
+                            <li>Visualize a disposição dos sensores</li>
+                            <li>Acompanhe histórico de leituras</li>
+                            <li>Identifique áreas de maior risco</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="usage-card">
+                        <h4>Configurações</h4>
+                        <p>Personalize o sistema:</p>
+                        <ul>
+                            <li>Ajuste limites de umidade</li>
+                            <li>Calibre os sensores</li>
+                            <li>Configure parâmetros do sistema</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Contatos de Emergência -->
+            <section class="emergency-contacts">
+                <h3>📞 Contatos de Emergência</h3>
+                <div class="contacts-grid">
+                    <div class="contact-item">
+                        <strong>Defesa Civil:</strong> 199
+                    </div>
+                    <div class="contact-item">
+                        <strong>Bombeiros:</strong> 193
+                    </div>
+                    <div class="contact-item">
+                        <strong>SAMU:</strong> 192
+                    </div>
+                    <div class="contact-item">
+                        <strong>Polícia:</strong> 190
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 RaizAlerta - Sistema de Monitoramento de Umidade do Solo</p>
+        </div>
+    </footer>
+</body>
+</html>
