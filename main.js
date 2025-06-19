@@ -254,6 +254,75 @@ function showError(message) {
     // Opcionalmente, mostrar erro na interface
 }
 
+// BLE - Web Bluetooth API
+const bleConnectButton = document.getElementById('bleConnectButton');
+let bleDevice = null;
+let bleCharacteristic = null;
+
+if (bleConnectButton) {
+    bleConnectButton.addEventListener('click', connectBLE);
+}
+
+async function connectBLE() {
+    bleConnectButton.textContent = 'Procurando...';
+    bleConnectButton.classList.remove('connected', 'error');
+    bleConnectButton.classList.add('connecting');
+    try {
+        // Solicita dispositivo BLE com nome "ESP32Sensores"
+        bleDevice = await navigator.bluetooth.requestDevice({
+            filters: [{ name: 'ESP32Sensores' }],
+            optionalServices: ['4fafc201-1fb5-459e-8fcc-c5c9c331914b']
+        });
+        bleConnectButton.textContent = 'Conectando...';
+
+        const server = await bleDevice.gatt.connect();
+        const service = await server.getPrimaryService('4fafc201-1fb5-459e-8fcc-c5c9c331914b');
+        bleCharacteristic = await service.getCharacteristic('beb5483e-36e1-4688-b7f5-ea07361b26a8');
+
+        // Notificações de dados
+        await bleCharacteristic.startNotifications();
+        bleCharacteristic.addEventListener('characteristicvaluechanged', handleBLEData);
+
+        bleConnectButton.textContent = 'Conectado!';
+        bleConnectButton.classList.remove('connecting');
+        bleConnectButton.classList.add('connected');
+    } catch (err) {
+        bleConnectButton.textContent = 'Erro ao conectar';
+        bleConnectButton.classList.remove('connecting');
+        bleConnectButton.classList.add('error');
+        setTimeout(() => {
+            bleConnectButton.textContent = 'Conectar Bluetooth';
+            bleConnectButton.classList.remove('error');
+        }, 3000);
+        console.error('BLE erro:', err);
+    }
+}
+
+// Manipula dados recebidos via BLE
+function handleBLEData(event) {
+    const value = event.target.value;
+    const decoder = new TextDecoder('utf-8');
+    const dataStr = decoder.decode(value);
+    // Esperado: "45.5,48.2,46.8,0"
+    const parts = dataStr.split(',');
+    if (parts.length >= 4) {
+        const sensor1 = parseFloat(parts[0]);
+        const sensor2 = parseFloat(parts[1]);
+        const average = parseFloat(parts[2]);
+        const alerta = parts[3] === '1';
+        // Determina faixa
+        let range = 'normal';
+        if (average < 30) range = 'muito-seco';
+        else if (average < 50) range = 'normal';
+        else if (average < 70) range = 'alerta';
+        else range = 'critico';
+
+        updateDashboard({ sensor1, sensor2, average, range });
+        updateConnectionStatus('connected');
+        updateLastUpdateTime();
+    }
+}
+
 // Exemplo de estrutura de dados esperada do ESP32:
 /*
 {

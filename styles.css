@@ -373,6 +373,38 @@ body {
     font-size: 1.1rem;
 }
 
+/* Estilos do Botão de Conexão BLE */
+#bleConnectButton {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    justify-content: center;
+}
+
+#bleConnectButton.connected {
+    background-color: var(--success-color);
+    color: white;
+}
+
+#bleConnectButton.connecting {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+#bleConnectButton.error {
+    background-color: var(--danger-color);
+    color: white;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     .main-header .container {
