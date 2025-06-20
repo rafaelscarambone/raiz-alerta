@@ -1,125 +1,58 @@
-# RaizAlerta - Interface Web
+#  Raiz Alerta: Monitoramento e Alerta Precoce de Risco Geológico
 
-Sistema de monitoramento de umidade do solo com interface web responsiva para interação com dispositivos ESP32.
+O Raiz Alerta é um projeto dedicado a salvar vidas em comunidades de encosta, oferecendo um sistema de monitoramento e alerta precoce de risco geológico, com foco especial em deslizamentos. Desenvolvido no contexto do projeto HackaNav, buscamos proporcionar uma ferramenta acessível e eficaz onde a informação é mais necessária.
 
-## 📋 Descrição
+## �� O Desafio que Enfrentamos
 
-O RaizAlerta é um sistema de monitoramento de umidade do solo que utiliza sensores conectados a um ESP32. Esta interface web permite visualizar os dados em tempo real, configurar parâmetros e receber alertas sobre condições críticas.
+Comunidades situadas em encostas enfrentam riscos crescentes de deslizamentos, especialmente durante períodos chuvosos. Uma dificuldade significativa é a falta de acesso dos moradores a dados objetivos sobre as condições do solo, levando-os a tomar decisões críticas, como evacuar, baseados apenas na percepção visual. A região que motivou o Raiz Alerta já presenciou pequenos eventos, e o risco de ocorrências maiores aumenta com a intensidade das chuvas.
 
-## 🚀 Estrutura do Projeto
-raizalerta-web/ ├── index.html # Dashboard principal ├── styles.css # Estilos do dashboard ├── main.js # Lógica do dashboard ├── localizacao.html # Página de localização ├── localizacao.css # Estilos da localização ├── localizacao.js # Lógica da localização ├── guia.html # Guia e procedimentos ├── guia.css # Estilos do guia ├── guia.js # Lógica do guia ├── configuracoes.html # Configurações do sistema ├── configuracoes.css # Estilos das configurações ├── configuracoes.js # Lógica das configurações └── README.md # Este arquivo
+## ✨ Nossa Solução Inovadora
 
+O Raiz Alerta se diferencia pela sua abordagem prática e de baixo custo. Unimos **hardware acessível** (ESP32 e sensores de umidade de solo) a um **dashboard web completamente responsivo** que roda localmente, eliminando a necessidade de um servidor intermediário e garantindo funcionalidade mesmo em condições de internet instável. Nosso objetivo é transformar dados brutos em informação acionável para os moradores e dados históricos valiosos para a Defesa Civil.
 
-## 🛠️ Como Executar Localmente
+### Principais Características:
 
-1. **Clone ou baixe** todos os arquivos do projeto para uma pasta local.
+*   **Monitoramento em Tempo Real:** Sensores de umidade coletam dados a cada 10 segundos, calculando uma média para avaliação das condições do solo.
+*   **Alertas Visuais e Sonoros:** Um buzzer integrado e indicadores visuais no dashboard alertam imediatamente os moradores quando os níveis de umidade atingem patamares críticos.
+*   **Dashboard Web Intuitivo:** Uma interface amigável e responsiva (acessível via Wi-Fi local) permite visualizar indicadores, histórico básico e informações essenciais.
+*   **Configuração Flexível:** Limites de alerta e outros parâmetros podem ser ajustados diretamente pelo dashboard, com persistência dos dados na memória flash do ESP32.
+*   **Autossustentabilidade:** Projetado para operar de forma independente, minimizando a dependência de infraestruturas de rede complexas.
+*   **Hardware de Baixo Custo:** Utiliza componentes comuns e acessíveis, tornando a solução replicável em diversas comunidades.
 
-2. **Abra o arquivo** `index.html` em um navegador web moderno (Chrome, Firefox, Edge).
+## ��️ Componentes Chave
 
-3. **Configure o IP do ESP32**:
-   - Navegue até a página de Configurações
-   - Insira o endereço IP do seu ESP32 (ex: 192.168.1.100)
-   - Clique em "Conectar"
+*   **Hardware:**
+    *   1 x ESP32 DevKit V1
+    *   2 x Sensores de Umidade de Solo (analógicos, compatíveis com 3V/5V)
+    *   Protoboard e Jumpers
+    *   Buzzer Passivo
+*   **Firmware (ESP32):**
+    *   Leitura e processamento de dados dos sensores.
+    *   Implementação de endpoints REST/JSON (`/status`, `/config`, `/calibrate`).
+    *   Persistência de configurações utilizando o sistema Preferences da ESP-IDF.
+    *   Sistema de códigos de erro claros para diagnóstico.
+*   **Dashboard Web (Frontend):**
+    *   **Dashboard:** Indicadores em tempo real, barra de progresso, botões de ação rápida.
+    *   **Localização:** Mapa com posição dos sensores e histórico básico de medições.
+    *   **Guia:** Instruções sobre como interpretar os dados e procedimentos de segurança em caso de alerta.
+    *   **Configurações:** Interface para ajuste dos limites de alerta, configuração de Wi-Fi e calibração manual dos sensores.
+*   **Ferramentas de Desenvolvimento:** Arduino IDE, VS Code.
+*   **Testes:** Testes unitários para firmware (utilizando ArduinoFake) e testes de frontend (Jest + Testing Library).
 
-4. **Certifique-se** de que o ESP32 está:
-   - Conectado à mesma rede Wi-Fi
-   - Executando o firmware do RaizAlerta
-   - Com o servidor web ativo
+## 🚀 Entrega e Próximos Passos
 
-## 📡 Comunicação com o ESP32
+O projeto Raiz Alerta foi concebido para ser implementado rapidamente e de forma eficiente. A entrega inclui:
 
-A interface se comunica com o ESP32 através de requisições HTTP REST:
+*   Código fonte completamente comentado.
+*   Um README detalhado (este que você está lendo!).
+*   Checklist de deploy para facilitar a instalação em novas localidades.
 
-### Endpoints Utilizados:
+Estamos animados com o potencial do Raiz Alerta em fornecer segurança e tranquilidade para comunidades vulneráveis. Convidamos você a explorar o código, testar a solução e contribuir para este projeto que pode realmente fazer a diferença.
 
-- `GET /status` - Obtém leituras atuais dos sensores
-- `GET /config` - Obtém configurações atuais
-- `POST /config` - Atualiza limites de umidade
-- `POST /calibrate` - Calibra os sensores
-
-### Formato de Resposta do `/status`:
-```json
-{
-  "sensor1": 45.5,
-  "sensor2": 48.2,
-  "media": 46.85,
-  "faixa": "Normal"
-}
-
-🎯 Funcionalidades
-Dashboard
-Visualização em tempo real da umidade
-Indicadores visuais para cada sensor
-Barra de progresso da umidade média
-Sistema de alertas com efeitos visuais
-Atualização automática a cada 5 segundos
-Localização
-Visualização da área monitorada
-Histórico das últimas leituras
-Espaço para integração futura com mapas
-Guia
-Explicação das faixas de umidade
-Procedimentos de segurança
-Instruções de uso do sistema
-Configurações
-Configuração do IP do ESP32
-Ajuste dos limites de umidade
-Calibração dos sensores
-🎨 Faixas de Umidade
-O sistema classifica a umidade em 4 faixas:
-
-Muito Seco (🔴): < 30% - Solo extremamente seco
-Normal (🟢): 30-50% - Condições ideais
-Alerta (🟡): 50-70% - Atenção necessária
-Crítico (🔴): > 70% - Risco de deslizamento
-📱 Responsividade
-A interface é totalmente responsiva e se adapta a:
-
-Desktop (> 1024px)
-Tablet (768px - 1024px)
-Mobile (< 768px)
-⚙️ Requisitos Técnicos
-Navegador
-Chrome 80+
-Firefox 75+
-Safari 13+
-Edge 80+
-ESP32
-Firmware RaizAlerta instalado
-Conectado à rede Wi-Fi
-IP acessível na rede local
-🚀 Deploy em Produção
-Para um deploy real, considere:
-
-Servidor Web:
-
-Hospedar arquivos em servidor web (Apache, Nginx)
-Configurar HTTPS para segurança
-Implementar autenticação se necessário
-ESP32:
-
-Configurar IP estático ou mDNS
-Implementar segurança na API REST
-Considerar uso de WebSockets para real-time
-Melhorias Sugeridas:
-
-Banco de dados para histórico completo
-Sistema de notificações push
-Integração com serviços de mapa (Leaflet.js)
-Dashboard com gráficos históricos (Chart.js)
-Suporte a múltiplos dispositivos ESP32
-🐛 Solução de Problemas
-Não consegue conectar ao ESP32
-Verifique se está na mesma rede Wi-Fi
-Confirme o IP correto do ESP32
-Teste acessar http://[IP_ESP32]/status no navegador
-Dados não atualizam
-Verifique o console do navegador (F12)
-Confirme que o ESP32 está respondendo
-Recarregue a página (F5)
-Erro ao salvar configurações
-Verifique se o ESP32 suporta os endpoints
-Confirme formato dos dados enviados
-Verifique logs do ESP32 via Serial
-📄 Licença
-Este projeto é parte do sistema RaizAlerta para monitoramento de umidade do solo.
+## 📂 Estrutura do Projeto
+raiz-alerta/
+firmware/ # Código para o ESP32 (Arduino IDE ou ESP-IDF)
+frontend/ # Código do Dashboard Web 
+docs/ # Documentação adicional, diagramas, etc.
+tests/ # Arquivos de testes
+README.md # Este arquivo
