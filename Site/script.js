@@ -18,8 +18,8 @@ let bleDevice = null;
 let bleServer = null;
 let bleService = null;
 let bleDataCharacteristic = null;
-let secoThresholdCharacteristic = null;
-let umidoThresholdCharacteristic = null;
+let secoThresholdCharacteristic = null; // Agora representa o limiar de Alerta
+let umidoThresholdCharacteristic = null; // Agora representa o limiar de Alto Risco
 
 // Variáveis do Dashboard
 let autoUpdateInterval = null;
@@ -98,6 +98,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (bleConnectButtonConfig) {
         bleConnectButtonConfig.removeEventListener('click', connectBLE);
         bleConnectButtonConfig.addEventListener('click', connectBLE);
+    }
+    // Garante que a bolinha de status comece como 'disconnected'
+    const statusDashboard = document.getElementById('bleStatusDashboard');
+    if (statusDashboard) {
+        const indicator = statusDashboard.querySelector('.status-indicator');
+        if (indicator) {
+            indicator.classList.remove('connected', 'connecting', 'error');
+            indicator.classList.add('disconnected');
+        }
     }
 });
 
@@ -190,30 +199,32 @@ function initializeDashboard() {
         elements.averageValue.removeAttribute('data-empty');
         
         // Determinar faixa conforme limites do usuário
-        let limiteSeco = 10;
-        let limiteUmido = 40;
+        let limiteAlerta = 60;
+        let limiteAltoRisco = 80;
         const saved = localStorage.getItem('raizalerta_limits');
         if (saved) {
             try {
                 const settings = JSON.parse(saved);
-                if (settings.limiteSeco) limiteSeco = parseFloat(settings.limiteSeco);
-                if (settings.limiteUmido) limiteUmido = parseFloat(settings.limiteUmido);
+                if (settings.limiteSeco) limiteAlerta = parseFloat(settings.limiteSeco);
+                if (settings.limiteUmido) limiteAltoRisco = parseFloat(settings.limiteUmido);
             } catch (e) {}
         }
         let range = 'normal';
-        if (data.average < limiteSeco) range = 'muito-seco';
-        else if (data.average > limiteUmido) range = 'muito-umido';
-        else range = 'normal';
+        if (data.average >= limiteAltoRisco) {
+            range = 'alto-risco';
+        } else if (data.average >= limiteAlerta) {
+            range = 'alerta';
+        } else {
+            range = 'normal';
+        }
         
         // Garantir que apenas o card de Média tenha highlight
         const sensorCards = document.querySelectorAll('.sensor-card');
-        sensorCards.forEach(card => card.classList.remove('highlight', 'alerta-vermelho'));
+        sensorCards.forEach(card => card.classList.remove('highlight', 'highlight-normal', 'highlight-alerta', 'highlight-alto-risco'));
         const mediaCard = document.querySelectorAll('.sensor-card')[2];
         if (mediaCard) {
             mediaCard.classList.add('highlight');
-            if (range === 'muito-umido') {
-                mediaCard.classList.add('alerta-vermelho');
-            }
+            mediaCard.classList.add('highlight-' + range);
         }
         // Atualizar indicadores
         updateRangeIndicator(range, data.average);
@@ -232,23 +243,23 @@ function initializeDashboard() {
     
     function updateRangeIndicator(range, average) {
         const rangeConfig = {
-            'muito-seco': {
-                icon: '🏜️',
-                text: 'Muito Seco',
-                description: 'Solo extremamente seco. Irrigação pode ser necessária.',
-                class: 'muito-seco'
-            },
             'normal': {
                 icon: '✅',
                 text: 'Normal',
-                description: 'Umidade do solo em níveis adequados.',
+                description: 'Umidade do solo em níveis normais e seguros.',
                 class: 'normal'
             },
-            'muito-umido': {
-                icon: '💧',
-                text: 'Muito Úmido',
-                description: 'Solo muito úmido. Atenção: risco de saturação.',
-                class: 'muito-umido'
+            'alerta': {
+                icon: '⚠️',
+                text: 'Alerta',
+                description: 'Nível de umidade em alerta. Fique atento aos riscos de desabamento.',
+                class: 'alerta'
+            },
+            'alto-risco': {
+                icon: '🚨',
+                text: 'Alto Risco',
+                description: 'Umidade em nível crítico! Risco elevado de desabamento.',
+                class: 'alto-risco'
             }
         };
         
@@ -264,10 +275,17 @@ function initializeDashboard() {
         // Atualizar cor do card de status de umidade
         const rangeIndicator = document.getElementById('rangeIndicator');
         if (rangeIndicator) {
-            if (range === 'muito-umido') {
-                rangeIndicator.classList.add('muito-umido');
-            } else {
-                rangeIndicator.classList.remove('muito-umido');
+            rangeIndicator.className = 'range-indicator';
+            rangeIndicator.classList.add(range);
+        }
+
+        // Atualizar cor do card de média
+        const mediaCard = document.querySelectorAll('.sensor-card')[2];
+        if (mediaCard) {
+            mediaCard.classList.remove('highlight-normal', 'highlight-alerta', 'highlight-alto-risco');
+            if (bleDevice && bleDevice.gatt.connected) {
+                mediaCard.classList.add('highlight');
+                mediaCard.classList.add('highlight-' + range);
             }
         }
     }
@@ -373,19 +391,24 @@ function addToHistory(data) {
 
 function getStatusText(average) {
     // Busca limites salvos no localStorage
-    let limiteSeco = 10;
-    let limiteUmido = 40;
+    let limiteAlerta = 60;
+    let limiteAltoRisco = 80;
     const saved = localStorage.getItem('raizalerta_limits');
     if (saved) {
         try {
             const settings = JSON.parse(saved);
-            if (settings.limiteSeco) limiteSeco = parseFloat(settings.limiteSeco);
-            if (settings.limiteUmido) limiteUmido = parseFloat(settings.limiteUmido);
+            if (settings.limiteSeco) limiteAlerta = parseFloat(settings.limiteSeco);
+            if (settings.limiteUmido) limiteAltoRisco = parseFloat(settings.limiteUmido);
         } catch (e) {}
     }
-    if (average < limiteSeco) return 'Muito Seco';
-    if (average > limiteUmido) return 'Muito Úmido';
-    return 'Normal';
+    
+    if (average >= limiteAltoRisco) {
+        return 'Alto Risco';
+    } else if (average >= limiteAlerta) {
+        return 'Alerta';
+    } else {
+        return 'Normal';
+    }
 }
 
 function updateHistoryTable(filterDate = null) {
@@ -430,7 +453,9 @@ function updateHistoryTable(filterDate = null) {
             <td>${reading.sensor1.toFixed(1)}%</td>
             <td>${reading.sensor2.toFixed(1)}%</td>
             <td>${reading.average.toFixed(1)}%</td>
-            <td class="${reading.status === 'Muito Úmido' ? 'status-muito-umido' : ''}">${reading.status}</td>
+            <td class="${reading.status === 'Normal' ? 'status-normal' : 
+                         reading.status === 'Alerta' ? 'status-alerta' : 
+                         'status-alto-risco'}">${reading.status}</td>
         </tr>
     `).join('');
     
@@ -611,21 +636,21 @@ async function handleLimitsForm(e) {
 }
 
 function updateLimitsPreview() {
-    const limiteSeco = parseFloat(document.getElementById('limitMuitoSeco').value) || 10;
-    const limiteUmido = parseFloat(document.getElementById('limitMuitoUmido').value) || 40;
+    const limiteAlerta = parseFloat(document.getElementById('limitMuitoSeco').value) || 60;
+    const limiteAltoRisco = parseFloat(document.getElementById('limitMuitoUmido').value) || 80;
     
-    document.getElementById('previewSecoRange').textContent = `0-${limiteSeco}%`;
-    document.getElementById('previewNormalRange').textContent = `${limiteSeco}-${limiteUmido}%`;
-    document.getElementById('previewUmidoRange').textContent = `${limiteUmido}-100%`;
+    document.getElementById('previewNormalRange').textContent = `0-${limiteAlerta}%`;
+    document.getElementById('previewSecoRange').textContent = `${limiteAlerta}-${limiteAltoRisco}%`;
+    document.getElementById('previewUmidoRange').textContent = `${limiteAltoRisco}-100%`;
     
-    const previewVeryDry = document.getElementById('previewVeryDry');
     const previewNormal = document.getElementById('previewNormal');
-    const previewCritical = document.getElementById('previewCritical');
+    const previewAlerta = document.getElementById('previewVeryDry');
+    const previewAltoRisco = document.getElementById('previewCritical');
     
-    if (previewVeryDry && previewNormal && previewCritical) {
-        previewVeryDry.style.width = `${limiteSeco}%`;
-        previewNormal.style.width = `${limiteUmido - limiteSeco}%`;
-        previewCritical.style.width = `${100 - limiteUmido}%`;
+    if (previewNormal && previewAlerta && previewAltoRisco) {
+        previewNormal.style.width = `${limiteAlerta}%`;
+        previewAlerta.style.width = `${limiteAltoRisco - limiteAlerta}%`;
+        previewAltoRisco.style.width = `${100 - limiteAltoRisco}%`;
     }
 }
 
@@ -654,18 +679,48 @@ function saveLocalSettings() {
 
 function loadLocalSettings() {
     const saved = localStorage.getItem('raizalerta_limits');
+    
+    // Valores padrão
+    const defaultValues = {
+        limiteSeco: 60,
+        limiteUmido: 80
+    };
+    
     if (saved) {
         try {
             const settings = JSON.parse(saved);
-            if (settings.limiteSeco && document.getElementById('limitMuitoSeco')) {
-                document.getElementById('limitMuitoSeco').value = settings.limiteSeco;
+            
+            // Usa valores salvos ou valores padrão
+            const limiteSeco = settings.limiteSeco !== undefined ? settings.limiteSeco : defaultValues.limiteSeco;
+            const limiteUmido = settings.limiteUmido !== undefined ? settings.limiteUmido : defaultValues.limiteUmido;
+            
+            if (document.getElementById('limitMuitoSeco')) {
+                document.getElementById('limitMuitoSeco').value = limiteSeco;
             }
-            if (settings.limiteUmido && document.getElementById('limitMuitoUmido')) {
-                document.getElementById('limitMuitoUmido').value = settings.limiteUmido;
+            if (document.getElementById('limitMuitoUmido')) {
+                document.getElementById('limitMuitoUmido').value = limiteUmido;
             }
-            updateLimitsPreview();
         } catch (error) {
             console.error('Erro ao carregar configurações:', error);
+            // Em caso de erro, usa os valores padrão
+            setDefaultValues();
+        }
+    } else {
+        // Se não houver configurações salvas, define os valores padrão
+        setDefaultValues();
+        
+        // Salva os valores padrão no localStorage
+        saveLocalSettings();
+    }
+    
+    updateLimitsPreview();
+    
+    function setDefaultValues() {
+        if (document.getElementById('limitMuitoSeco')) {
+            document.getElementById('limitMuitoSeco').value = defaultValues.limiteSeco;
+        }
+        if (document.getElementById('limitMuitoUmido')) {
+            document.getElementById('limitMuitoUmido').value = defaultValues.limiteUmido;
         }
     }
 }
@@ -894,24 +949,36 @@ function simulateData() {
         elements.averageValue.textContent = '-';
         elements.averageValue.setAttribute('data-empty', 'true');
     }
-    // Remover destaque do card de Média (remover highlight e alerta-vermelho)
+    // Remover destaque do card de Média
     const sensorCards = document.querySelectorAll('.sensor-card');
-    sensorCards.forEach(card => card.classList.remove('highlight', 'alerta-vermelho'));
-    // Reseta o indicador de faixa
+    sensorCards.forEach(card => card.classList.remove('highlight', 'highlight-normal', 'highlight-alerta', 'highlight-alto-risco'));
+    
+    // Resetar range indicator para neutro
     if (elements.rangeDisplay) {
         elements.rangeDisplay.className = 'range-display';
         elements.rangeDisplay.innerHTML = `
             <span class="range-icon">⚪</span>
-            <span class="range-text">Sem dados</span>
+            <span class="range-text">Aguardando dados...</span>
         `;
     }
+    
     if (elements.rangeDescription) {
-        elements.rangeDescription.textContent = 'Conecte-se ao ESP32 para visualizar os dados';
+        elements.rangeDescription.textContent = 'Conecte-se ao dispositivo para ver o status atual.';
     }
-    // Reseta a barra de progresso
-    if (elements.progressFill) elements.progressFill.style.width = '0%';
-    if (elements.progressMarker) elements.progressMarker.style.left = '0%';
-    updateConnectionStatus('disconnected');
+    
+    // Resetar barra de progresso
+    if (elements.progressFill) {
+        elements.progressFill.style.width = '0%';
+    }
+    if (elements.progressMarker) {
+        elements.progressMarker.style.left = '0%';
+    }
+    
+    // Resetar range indicator para classe neutra
+    const rangeIndicator = document.getElementById('rangeIndicator');
+    if (rangeIndicator) {
+        rangeIndicator.className = 'range-indicator';
+    }
 }
 
 function loadSavedData() {

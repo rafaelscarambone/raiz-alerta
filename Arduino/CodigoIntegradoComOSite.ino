@@ -9,16 +9,16 @@
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 // UUID da característica de dados de sensores
 #define DATA_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-// UUID da característica para configurar o limite de umidade 'Muito Seco'
-#define SECO_THRESHOLD_CHARACTERISTIC_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914c" // Novo UUID
+// UUID da característica para configurar o limite de umidade 'Alerta' (era 'Muito Seco')
+#define ALERTA_THRESHOLD_CHARACTERISTIC_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914c" // Novo UUID
 // UUID da característica para configurar o limite de umidade 'Muito Úmido'
-#define UMIDO_THRESHOLD_CHARACTERISTIC_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914d" // Novo UUID
+#define UMIDO_THRESHOLD_CHARACTERISTIC_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914d" // Mantido
 
 
 BLEServer* pServer = NULL;
 BLECharacteristic* pDataCharacteristic = NULL; // Renomeado para clareza
-BLECharacteristic* pSecoThresholdCharacteristic = NULL; // Nova característica
-BLECharacteristic* pUmidoThresholdCharacteristic = NULL; // Nova característica
+BLECharacteristic* pAlertaThresholdCharacteristic = NULL; // Nova característica (era pSecoThresholdCharacteristic)
+BLECharacteristic* pUmidoThresholdCharacteristic = NULL; // Mantido
 
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
@@ -33,9 +33,9 @@ const int SECO_ADC = 4095;
 const int MOLHADO_ADC = 0;
 
 // Limiares de Umidade Configuráveis (Valores Iniciais)
-// O alarme dispara se a umidade for menor que secoThreshold ou maior que umidoThreshold
-float secoThreshold = 10.0; // Limiar para "Muito Seco" (%)
-float umidoThreshold = 40.0; // Limiar para "Muito Úmido" (%)
+// O alarme dispara se a umidade for menor que alertaThreshold ou maior que umidoThreshold
+float alertaThreshold = 60.0; // Limiar para "Alerta" (%)
+float umidoThreshold = 80.0; // Limiar para "Muito Úmido" (%)
 
 
 // Variáveis de tempo para envio de dados
@@ -62,51 +62,44 @@ class MyServerCallbacks: public BLEServerCallbacks {
 // Callbacks para escrita nas características de limiares
 class MyCharacteristicCallbacks: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
-        // CORREÇÃO AQUI: Obter o valor como String do Arduino e converter para std::string
-        std::string value = pCharacteristic->getValue().c_str(); // <- Linha corrigida
-
+        std::string value = pCharacteristic->getValue().c_str();
         if (value.length() > 0) {
             try {
-                float newThreshold = std::stof(value); // Converte std::string para float
-
+                float newThreshold = std::stof(value);
                 // Verifica qual característica foi escrita
-                if (pCharacteristic->getUUID().equals(BLEUUID(SECO_THRESHOLD_CHARACTERISTIC_UUID))) {
-                    // Característica de Limite Seco
-                    // Valida o novo valor: entre 0 e 100 e menor que o limite úmido
+                if (pCharacteristic->getUUID().equals(BLEUUID(ALERTA_THRESHOLD_CHARACTERISTIC_UUID))) {
+                    // Característica de Limite Alerta
+                    // Valida o novo valor: entre 0 e 100 e menor que o limite muito úmido
                     if (newThreshold >= 0.0 && newThreshold <= 100.0 && newThreshold < umidoThreshold) {
-                        secoThreshold = newThreshold;
-                        Serial.printf("Limite Seco atualizado para: %.1f%%\n", secoThreshold);
-                        // Opcional: Notificar o cliente de volta com o valor confirmado
-                        pCharacteristic->setValue(String(secoThreshold).c_str());
+                        alertaThreshold = newThreshold;
+                        Serial.printf("Limite Alerta atualizado para: %.1f%%\n", alertaThreshold);
+                        pCharacteristic->setValue(String(alertaThreshold).c_str());
                         pCharacteristic->notify();
                     } else {
-                        Serial.println("Valor inválido para Limite Seco recebido. Mantendo valor anterior.");
-                         // Opcional: Notificar o cliente de volta com o valor anterior ou uma indicação de erro
-                         pCharacteristic->setValue(String(secoThreshold).c_str()); // Envia o valor atual
-                         pCharacteristic->notify(); // Tenta notificar, embora a escrita tenha falhado na validação
+                        Serial.println("Valor inválido para Limite Alerta recebido. Mantendo valor anterior.");
+                        pCharacteristic->setValue(String(alertaThreshold).c_str());
+                        pCharacteristic->notify();
                     }
                 } else if (pCharacteristic->getUUID().equals(BLEUUID(UMIDO_THRESHOLD_CHARACTERISTIC_UUID))) {
-                    // Característica de Limite Úmido
-                     // Valida o novo valor: entre 0 e 100 e maior que o limite seco
-                    if (newThreshold >= 0.0 && newThreshold <= 100.0 && newThreshold > secoThreshold) {
+                    // Característica de Limite Muito Úmido
+                    // Valida o novo valor: entre 0 e 100 e maior que o limite alerta
+                    if (newThreshold >= 0.0 && newThreshold <= 100.0 && newThreshold > alertaThreshold) {
                         umidoThreshold = newThreshold;
-                        Serial.printf("Limite Úmido atualizado para: %.1f%%\n", umidoThreshold);
-                        // Opcional: Notificar o cliente de volta com o valor confirmado
-                         pCharacteristic->setValue(String(umidoThreshold).c_str());
-                         pCharacteristic->notify();
+                        Serial.printf("Limite Muito Úmido atualizado para: %.1f%%\n", umidoThreshold);
+                        pCharacteristic->setValue(String(umidoThreshold).c_str());
+                        pCharacteristic->notify();
                     } else {
-                         Serial.println("Valor inválido para Limite Úmido recebido. Mantendo valor anterior.");
-                         // Opcional: Notificar o cliente de volta com o valor anterior ou uma indicação de erro
-                         pCharacteristic->setValue(String(umidoThreshold).c_str()); // Envia o valor atual
-                         pCharacteristic->notify(); // Tenta notificar
+                        Serial.println("Valor inválido para Limite Muito Úmido recebido. Mantendo valor anterior.");
+                        pCharacteristic->setValue(String(umidoThreshold).c_str());
+                        pCharacteristic->notify();
                     }
                 }
             } catch (const std::invalid_argument& ia) {
                 Serial.println("Erro ao converter valor de string para float.");
             } catch (const std::out_of_range& oor) {
-                 Serial.println("Valor de string fora do intervalo para float.");
+                Serial.println("Valor de string fora do intervalo para float.");
             } catch (...) {
-                 Serial.println("Erro desconhecido ao processar a escrita BLE.");
+                Serial.println("Erro desconhecido ao processar a escrita BLE.");
             }
         }
     }
@@ -140,19 +133,19 @@ void setup() {
                     );
   pDataCharacteristic->addDescriptor(new BLE2902());
 
-  // Criar característica BLE para configurar o Limite Seco
-  pSecoThresholdCharacteristic = pService->createCharacteristic(
-                      SECO_THRESHOLD_CHARACTERISTIC_UUID,
+  // Criar característica BLE para configurar o Limite Alerta
+  pAlertaThresholdCharacteristic = pService->createCharacteristic(
+                      ALERTA_THRESHOLD_CHARACTERISTIC_UUID,
                       BLECharacteristic::PROPERTY_READ   |
                       BLECharacteristic::PROPERTY_WRITE
                     );
-  pSecoThresholdCharacteristic->addDescriptor(new BLE2902());
-  pSecoThresholdCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
+  pAlertaThresholdCharacteristic->addDescriptor(new BLE2902());
+  pAlertaThresholdCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
   // Define o valor inicial na característica para que possa ser lido pelo cliente
-  pSecoThresholdCharacteristic->setValue(String(secoThreshold).c_str());
+  pAlertaThresholdCharacteristic->setValue(String(alertaThreshold).c_str());
 
 
-  // Criar característica BLE para configurar o Limite Úmido
+  // Criar característica BLE para configurar o Limite Muito Úmido
   pUmidoThresholdCharacteristic = pService->createCharacteristic(
                       UMIDO_THRESHOLD_CHARACTERISTIC_UUID,
                       BLECharacteristic::PROPERTY_READ   |
@@ -160,7 +153,6 @@ void setup() {
                     );
   pUmidoThresholdCharacteristic->addDescriptor(new BLE2902());
   pUmidoThresholdCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
-    // Define o valor inicial na característica para que possa ser lido pelo cliente
   pUmidoThresholdCharacteristic->setValue(String(umidoThreshold).c_str());
 
 
@@ -209,8 +201,8 @@ void loop() {
     float media = (sensor1 + sensor2) / 2.0;
 
     // === Lógica de Alerta Modificada ===
-    // O alerta é true se a média estiver abaixo do limiar de seco OU acima do limiar de úmido
-    bool alerta = (media < secoThreshold || media > umidoThreshold);
+    // O alerta é true se a média estiver abaixo do limiar de alerta OU acima do limiar de muito úmido
+    bool alerta = (media < alertaThreshold || media > umidoThreshold);
 
     // Controlar buzzer com base na lógica de alerta
     digitalWrite(BUZZER_PIN, alerta ? HIGH : LOW);
@@ -229,7 +221,7 @@ void loop() {
     pDataCharacteristic->notify();
 
     Serial.println("Dados enviados: " + dados);
-    Serial.printf("Limiares atuais: Seco=%.1f%%, Úmido=%.1f%%\n", secoThreshold, umidoThreshold);
+    Serial.printf("Limiares atuais: Alerta=%.1f%%, Muito Úmido=%.1f%%\n", alertaThreshold, umidoThreshold);
   }
 
   // Pequeno delay para o loop não rodar excessivamente rápido

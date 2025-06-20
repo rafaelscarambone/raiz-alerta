@@ -43,7 +43,7 @@ body {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 99999;
+    z-index: 2147483647;
     transition: transform 0.3s ease;
 }
 
@@ -159,20 +159,20 @@ section {
 }
 
 .status-indicator.connecting {
-    background-color: #ffc107;
+    background-color: #FFC107 !important;
     animation: pulse 1.5s infinite;
 }
 
 .status-indicator.connected {
-    background-color: #28a745;
+    background-color: #4CAF50 !important;
 }
 
 .status-indicator.disconnected {
-    background-color: #dc3545;
+    background-color: #F44336 !important;
 }
 
 .status-indicator.error {
-    background-color: #dc3545;
+    background-color: #F44336 !important;
 }
 
 @keyframes pulse {
@@ -247,61 +247,69 @@ section {
     color: white;
 }
 
-.sensor-card.highlight.alerta-vermelho {
-    background: linear-gradient(135deg, #f44336, #ff7961);
-    color: #fff;
+/* Novas classes para os diferentes estados de destaque */
+.sensor-card.highlight-normal {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
 }
 
-.sensor-card.highlight.alerta-vermelho h3,
-.sensor-card.highlight.alerta-vermelho .sensor-value,
-.sensor-card.highlight.alerta-vermelho .sensor-unit {
-    color: #fff;
+.sensor-card.highlight-alerta {
+    background: linear-gradient(135deg, #FFC107, #FFB300);
+}
+
+.sensor-card.highlight-alto-risco {
+    background: linear-gradient(135deg, #F44336, #D32F2F);
 }
 
 /* Indicador de Faixa */
 .range-indicator {
-    background: white;
-    padding: 2rem;
+    background-color: white;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.range-indicator.normal {
+    background-color: rgba(76, 175, 80, 0.1);
+    border-left: 5px solid #4CAF50;
+}
+
+.range-indicator.alerta {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-left: 5px solid #FFC107;
+}
+
+.range-indicator.alto-risco {
+    background-color: rgba(244, 67, 54, 0.1);
+    border-left: 5px solid #F44336;
 }
 
 .range-display {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1.5rem;
+    gap: 10px;
+    padding: 15px 20px;
+    background-color: #f5f5f5;
     border-radius: 10px;
-    margin: 1rem 0;
     transition: all 0.3s ease;
-}
-
-.range-display.muito-seco {
-    background-color: #ffe5e5;
-    color: #d32f2f;
+    margin-bottom: 10px;
 }
 
 .range-display.normal {
-    background-color: #e5f5e5;
-    color: #388e3c;
+    background-color: #4CAF50;
+    color: white;
 }
 
 .range-display.alerta {
-    background-color: #fff3cd;
-    color: #f57c00;
+    background-color: #FFC107;
+    color: #333;
 }
 
-.range-display.critico {
-    background-color: #ffebee;
-    color: #c62828;
-    animation: alertPulse 1s infinite;
-}
-
-@keyframes alertPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
+.range-display.alto-risco {
+    background-color: #F44336;
+    color: white;
+    animation: alertPulse 1.5s infinite;
 }
 
 .range-icon {
@@ -628,10 +636,21 @@ section {
     transform: scale(1.01);
 }
 
-.status-muito-seco { color: #d32f2f; }
-.status-normal { color: #388e3c; }
-.status-alerta { color: #f57c00; }
-.status-crítico { color: #c62828; }
+/* Status no histórico */
+.status-normal { 
+    color: #388e3c; 
+    font-weight: normal;
+}
+
+.status-alerta { 
+    color: #f57c00; 
+    font-weight: normal;
+}
+
+.status-alto-risco { 
+    color: #d32f2f; 
+    font-weight: bold;
+}
 
 .no-history {
     text-align: center;
@@ -822,16 +841,16 @@ section {
     overflow: hidden;
 }
 
-.preview-segment.very-dry {
-    background-color: #ff6b6b;
+.preview-segment.normal {
+    background-color: #4CAF50;
 }
 
-.preview-segment.normal {
-    background-color: #4ecdc4;
+.preview-segment.very-dry {
+    background-color: #FFC107;
 }
 
 .preview-segment.critical {
-    background-color: #ff9f43;
+    background-color: #F44336;
 }
 
 .preview-segment span {
@@ -1115,6 +1134,11 @@ section {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+@keyframes alertPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
 /* ========================================
@@ -1505,17 +1529,18 @@ section {
     margin-left: 32px;
 }
 
+/* Remover classes obsoletas */
 .range-indicator.muito-umido {
-    background: linear-gradient(135deg, #f44336, #ff7961);
-    color: #fff;
+    background-color: transparent;
+    border-left: none;
 }
+
 .range-indicator.muito-umido h3,
-.range-indicator.muito-umido .range-text,
-.range-indicator.muito-umido .range-icon {
-    color: #fff;
+.range-indicator.muito-umido .range-description {
+    color: inherit;
 }
 
 .history-table td.status-muito-umido {
-    color: #f44336;
-    font-weight: bold;
+    color: inherit;
+    font-weight: normal;
 } 
