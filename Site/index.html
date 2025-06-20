@@ -3,114 +3,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RaizAlerta - Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>RaizAlerta - Sistema Completo</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos para a página unificada */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .section-header {
+            text-align: center;
+            padding: 40px 0 20px;
+            background-color: #f8f9fa;
+            margin-bottom: 30px;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .section-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* Navegação fixa no topo */
+        .fixed-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        
+        .fixed-nav.hidden {
+            transform: translateY(-100%);
+        }
+        
+        .fixed-nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+        
+        .fixed-nav h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .fixed-nav nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .fixed-nav nav a:hover,
+        .fixed-nav nav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        /* Ajuste para o conteúdo não ficar atrás da nav fixa */
+        body {
+            padding-top: 70px;
+        }
+        
+        /* Botão voltar ao topo */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #4CAF50;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: #45a049;
+            transform: translateY(-3px);
+        }
+        
+        /* Ajustes para seções */
+        section {
+            /* min-height: 100vh; */
+            padding: 40px 0;
+        }
+        
+        #dashboard {
+            min-height: auto;
+        }
+    </style>
 </head>
 <body>
-    <!-- Cabeçalho Principal -->
-    <header class="main-header">
+    <div id="floatingNotification" style="display:none;"></div>
+    <!-- Navegação Fixa -->
+    <header class="fixed-nav" id="fixedNav">
         <div class="container">
             <h1>🌱 RaizAlerta</h1>
-            <nav class="main-nav">
-                <a href="index.html" class="active">Dashboard</a>
-                <a href="localizacao.html">Localização</a>
-                <a href="guia.html">Guia</a>
-                <a href="configuracoes.html">Configurações</a>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Área Principal do Dashboard -->
-    <main class="dashboard-main">
-        <div class="container">
-            <!-- Status de Conexão -->
-            <div class="connection-status" id="connectionStatus">
-                <span class="status-indicator"></span>
-                <span class="status-text">Verificando conexão...</span>
-            </div>
-
-            <!-- Grid de Sensores -->
-            <div class="sensors-grid">
-                <!-- Sensor 1 -->
-                <div class="sensor-card">
-                    <h3>Sensor 1</h3>
-                    <div class="sensor-value" id="sensor1Value">--</div>
-                    <div class="sensor-unit">% Umidade</div>
-                </div>
-
-                <!-- Sensor 2 -->
-                <div class="sensor-card">
-                    <h3>Sensor 2</h3>
-                    <div class="sensor-value" id="sensor2Value">--</div>
-                    <div class="sensor-unit">% Umidade</div>
-                </div>
-
-                <!-- Média -->
-                <div class="sensor-card highlight">
-                    <h3>Média</h3>
-                    <div class="sensor-value" id="averageValue">--</div>
-                    <div class="sensor-unit">% Umidade</div>
-                </div>
-            </div>
-
-            <!-- Indicador de Faixa -->
-            <div class="range-indicator" id="rangeIndicator">
-                <h3>Status da Umidade</h3>
-                <div class="range-display" id="rangeDisplay">
-                    <span class="range-icon">⚪</span>
-                    <span class="range-text">Aguardando dados...</span>
-                </div>
-                <div class="range-description" id="rangeDescription"></div>
-            </div>
-
-            <!-- Barra de Progresso Visual -->
-            <div class="progress-container">
-                <h3>Nível de Umidade</h3>
-                <div class="progress-wrapper">
-                    <div class="progress-bar" id="progressBar">
-                        <div class="progress-fill" id="progressFill"></div>
-                        <div class="progress-marker" id="progressMarker"></div>
-                    </div>
-                    <div class="progress-labels">
-                        <span>0%</span>
-                        <span>25%</span>
-                        <span>50%</span>
-                        <span>75%</span>
-                        <span>100%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Botões de Ação -->
-            <div class="action-buttons">
-                <button class="btn btn-primary" id="updateButton">
-                    <span class="btn-icon">🔄</span>
-                    Atualizar Dados
-                </button>
-                <button class="btn btn-secondary" id="autoUpdateToggle">
-                    <span class="btn-icon">⏱️</span>
-                    <span id="autoUpdateText">Ativar Auto-Atualização</span>
-                </button>
+            <div class="header-bluetooth-group">
                 <button class="btn btn-secondary" id="bleConnectButton">
                     <span class="btn-icon">📶</span>
                     Conectar Bluetooth
                 </button>
+                <span id="bleStatusDashboard" class="connection-status-inline">
+                    <span class="status-indicator"></span>
+                    <span class="status-text">Desconectado</span>
+                </span>
             </div>
-
-            <!-- Última Atualização -->
-            <div class="last-update">
-                <p>Última atualização: <span id="lastUpdateTime">--</span></p>
-            </div>
+            <nav>
+                <a href="#dashboard" class="nav-link active">Dashboard</a>
+                <a href="#localizacao" class="nav-link">Localização</a>
+                <a href="#configuracoes" class="nav-link">Configurações</a>
+            </nav>
         </div>
-    </main>
+    </header>
+
+    <!-- SEÇÃO 1: DASHBOARD -->
+    <section id="dashboard">
+        <div class="section-header">
+            <h2>📊 Dashboard</h2>
+            <p>Monitoramento em tempo real dos sensores de umidade</p>
+        </div>
+        
+        <main class="dashboard-main">
+            <div class="container">
+
+                <!-- Grid de Sensores -->
+                <div class="sensors-grid">
+                                    <!-- Sensor 1 -->
+                <div class="sensor-card">
+                    <h3>Sensor 1</h3>
+                    <div class="sensor-value" id="sensor1Value">-</div>
+                    <div class="sensor-unit">% Umidade</div>
+                </div>
+
+                    <!-- Sensor 2 -->
+                    <div class="sensor-card">
+                        <h3>Sensor 2</h3>
+                        <div class="sensor-value" id="sensor2Value">-</div>
+                        <div class="sensor-unit">% Umidade</div>
+                    </div>
+
+                    <!-- Média -->
+                    <div class="sensor-card highlight">
+                        <h3>Média</h3>
+                        <div class="sensor-value" id="averageValue">-</div>
+                        <div class="sensor-unit">% Umidade</div>
+                    </div>
+                </div>
+
+                <!-- Indicador de Faixa -->
+                <div class="range-indicator" id="rangeIndicator">
+                    <h3>Status da Umidade</h3>
+                    <div class="range-display" id="rangeDisplay">
+                        <span class="range-icon">⚪</span>
+                        <span class="range-text">Aguardando dados...</span>
+                    </div>
+                    <div class="range-description" id="rangeDescription"></div>
+                </div>
+
+                <!-- Barra de Progresso Visual -->
+                <div class="progress-container">
+                    <h3>Nível de Umidade</h3>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <div class="progress-marker" id="progressMarker"></div>
+                        </div>
+                        <div class="progress-labels">
+                            <span>0%</span>
+                            <span>25%</span>
+                            <span>50%</span>
+                            <span>75%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </section>
+
+
+    <!-- SEÇÃO 2: LOCALIZAÇÃO -->
+    <section id="localizacao">
+        <div class="section-header">
+            <h2>📍 Localização</h2>
+            <p>Informações sobre a área monitorada e histórico de leituras</p>
+        </div>
+        
+        <main class="location-main">
+            <div class="container">
+                <!-- Área do Mapa -->
+                <div class="map-container">
+                    <div style="text-align:center; margin-bottom: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; align-items: center;">
+                        <button class="btn btn-primary" id="setUserLocationBtn" style="display:inline-flex;align-items:center;gap:8px;">
+                            <span class="btn-icon">📍</span> Definir minha localização
+                        </button>
+                        <input type="number" id="inputLat" placeholder="Latitude" step="any" style="width:130px; padding:7px; border-radius:5px; border:1px solid #ccc; margin-left:15px;">
+                        <input type="number" id="inputLng" placeholder="Longitude" step="any" style="width:130px; padding:7px; border-radius:5px; border:1px solid #ccc;">
+                        <button class="btn btn-secondary" id="setLatLngBtn" style="margin-left:8px;">Definir Localização</button>
+                    </div>
+                    <div class="map-placeholder" id="mapArea">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400'%3E%3Crect fill='%23e0e0e0' width='800' height='400'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23666' font-family='Arial' font-size='20'%3EÁrea do Mapa%3C/text%3E%3C/svg%3E" alt="Área do Mapa">
+                        <div class="map-overlay">
+                            <p>🗺️ Integração com mapa em desenvolvimento</p>
+                            <small>Futura integração com Leaflet.js ou Google Maps</small>
+                        </div>
+                    </div>
+                </div>
+                <!-- Histórico de Leituras -->
+                <div class="readings-history">
+                    <h3>📊 Histórico de Leituras</h3>
+                    
+                    <!-- Filtro de Data -->
+                    <div class="history-filter">
+                        <div class="filter-group">
+                            <label for="dateFilter">Filtrar por data:</label>
+                            <input type="date" id="dateFilter" class="date-filter">
+                            <button class="btn btn-secondary btn-sm" id="clearFilterBtn">
+                                Limpar Filtro
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="history-controls">
+                        <div class="control-buttons">
+                            <button class="btn btn-secondary" id="clearHistoryBtn">
+                                🗑️ Limpar Histórico
+                            </button>
+                            <button class="btn btn-primary" id="downloadHistoryBtn">
+                                📥 Baixar CSV
+                            </button>
+                        </div>
+                        <span class="history-count">
+                            Total de registros: <span id="historyCount">0</span>
+                        </span>
+                    </div>
+                    <div class="history-table-container">
+                        <table class="history-table" id="historyTable">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Horário</th>
+                                    <th>Sensor 1</th>
+                                    <th>Sensor 2</th>
+                                    <th>Média</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- Dados serão inseridos via JavaScript -->
+                            </tbody>
+                        </table>
+                        <div class="no-history" id="noHistory">
+                            <p>📭 Nenhum histórico disponível ainda</p>
+                            <small>As leituras aparecerão aqui conforme forem coletadas</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </section>
+    
+    <!-- SEÇÃO 3: CONFIGURAÇÕES -->
+    <section id="configuracoes">
+        <div class="section-header">
+            <h2>⚙️ Configurações</h2>
+            <p>Configure os limites de umidade e parâmetros do sistema</p>
+        </div>
+        
+        <main class="config-main">
+            <div class="container">
+                <div id="feedbackMessage" class="feedback-message"></div>
+                <!-- Removido bloco de conexão Bluetooth -->
+                <section class="config-section">
+                    <h3>💧 Configurar Limites de Umidade</h3>
+                    <div class="config-card">
+                        <form id="limitsForm">
+                            <div class="limits-grid">
+                                <div class="form-group">
+                                    <label for="limitMuitoSeco">
+                                        Limite Muito Seco (%)
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        id="limitMuitoSeco" 
+                                        name="limitMuitoSeco" 
+                                        min="0" 
+                                        max="100" 
+                                        step="0.1"
+                                        value="10"
+                                        required
+                                    >
+                                    <small>Umidade abaixo deste valor = Solo Muito Seco (Alarme ativado)</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="limitMuitoUmido">
+                                        Limite Muito Úmido (%)
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        id="limitMuitoUmido" 
+                                        name="limitMuitoUmido" 
+                                        min="0" 
+                                        max="100" 
+                                        step="0.1"
+                                        value="40"
+                                        required
+                                    >
+                                    <small>Umidade acima deste valor = Solo Muito Úmido (Alarme ativado)</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Visualização dos Limites -->
+                            <div class="limits-preview">
+                                <h4>Visualização das Faixas:</h4>
+                                <div class="preview-bar">
+                                    <div class="preview-segment very-dry" id="previewVeryDry">
+                                        <span>Muito Seco</span>
+                                        <small id="previewSecoRange">0-10%</small>
+                                    </div>
+                                    <div class="preview-segment normal" id="previewNormal">
+                                        <span>Normal</span>
+                                        <small id="previewNormalRange">10-40%</small>
+                                    </div>
+                                    <div class="preview-segment critical" id="previewCritical">
+                                        <span>Muito Úmido</span>
+                                        <small id="previewUmidoRange">40-100%</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+
+                                <button type="submit" class="btn btn-primary" id="saveLimitsButton" disabled>
+                                    Salvar Limites no Arduino
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </section>
+
+  
 
     <!-- Rodapé -->
     <footer class="main-footer">
         <div class="container">
             <p>RaizAlerta © 2025 - Sistema de Monitoramento de Umidade do Solo</p>
-            <p>ESP32 IP: <span id="esp32IP">Não configurado</span></p>
+            <p>Desenvolvido para prevenção de deslizamentos e segurança comunitária</p>
         </div>
     </footer>
+
+    <!-- Botão Voltar ao Topo -->
+    <a href="#dashboard" class="back-to-top" id="backToTop">↑</a>
 
     <!-- Overlay de Alerta Crítico -->
     <div class="critical-alert-overlay" id="criticalAlertOverlay">
@@ -121,6 +396,77 @@
         </div>
     </div>
 
-    <script src="main.js"></script>
+    <!-- Script Unificado -->
+    <script src="script.js"></script>
+    <script>
+        // Script específico para a página unificada
+        
+        // Gerencia a navegação ativa
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section[id]');
+        
+        // Atualiza link ativo baseado na posição do scroll
+        function updateActiveNav() {
+            const scrollY = window.pageYOffset;
+            
+            sections.forEach(section => {
+                const sectionHeight = section.offsetHeight;
+                const sectionTop = section.offsetTop - 100;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + sectionId) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Mostra/esconde botão voltar ao topo
+        function toggleBackToTop() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        }
+        
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            updateActiveNav();
+            toggleBackToTop();
+        });
+        
+        // Smooth scroll para links de navegação
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        // Conecta o botão de Bluetooth das configurações ao mesmo handler
+        const bleConnectButtonConfig = document.getElementById('bleConnectButtonConfig');
+        if (bleConnectButtonConfig) {
+            // Remove listener antigo se existir
+            bleConnectButtonConfig.removeEventListener('click', connectBLE);
+            // Adiciona novo listener
+            bleConnectButtonConfig.addEventListener('click', connectBLE);
+        }
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            updateActiveNav();
+            toggleBackToTop();
+        });
+    </script>
 </body>
-</html>
+</html> 

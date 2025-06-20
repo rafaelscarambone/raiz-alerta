@@ -1,0 +1,1521 @@
+/**
+ * RaizAlerta - Estilos Unificados
+ * Combina todos os estilos do sistema em um único arquivo
+ */
+
+/* ========================================
+   RESET E ESTILOS BASE
+   ======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+    padding-top: 70px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ========================================
+   NAVEGAÇÃO FIXA
+   ======================================== */
+
+.fixed-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 99999;
+    transition: transform 0.3s ease;
+}
+
+.fixed-nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+}
+
+.fixed-nav h1 {
+    font-size: 1.5rem;
+    margin-right: 0;
+    color: #4CAF50;
+}
+
+.fixed-nav nav {
+    display: flex;
+    gap: 10px;
+}
+
+.fixed-nav nav a {
+    text-decoration: none;
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.fixed-nav nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: #4CAF50;
+    transition: width 0.3s ease;
+}
+
+.fixed-nav nav a:hover,
+.fixed-nav nav a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.fixed-nav nav a.active::after,
+.fixed-nav nav a:hover::after {
+    width: 100%;
+}
+
+/* ========================================
+   SEÇÕES
+   ======================================== */
+
+section {
+    padding: 40px 0;
+    margin-top: 32px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.section-header {
+    text-align: center;
+    padding: 40px 0 20px;
+    background-color: #f8f9fa;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.section-header p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.section-divider {
+    display: none;
+}
+
+/* ========================================
+   DASHBOARD
+   ======================================== */
+
+.dashboard-main {
+    padding: 2rem 0;
+}
+
+.connection-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background-color: #f5f5f5;
+    border-radius: 20px;
+    font-size: 14px;
+    margin-bottom: 2rem;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #999;
+    transition: background-color 0.3s ease;
+}
+
+.status-indicator.connecting {
+    background-color: #ffc107;
+    animation: pulse 1.5s infinite;
+}
+
+.status-indicator.connected {
+    background-color: #28a745;
+}
+
+.status-indicator.disconnected {
+    background-color: #dc3545;
+}
+
+.status-indicator.error {
+    background-color: #dc3545;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* Grid de Sensores */
+.sensors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.sensor-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.sensor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.sensor-card h3 {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.sensor-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #4CAF50;
+    margin-bottom: 0.5rem;
+}
+
+/* Estilo para valores vazios */
+.sensor-value:has-text("-") {
+    color: #ccc;
+    opacity: 0.5;
+}
+
+/* Alternativa que funciona em mais navegadores */
+.sensor-card .sensor-value {
+    transition: all 0.3s ease;
+}
+
+.sensor-card .sensor-value[data-empty="true"] {
+    color: #ccc;
+    opacity: 0.5;
+}
+
+.sensor-unit {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.sensor-card.highlight {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+}
+
+.sensor-card.highlight h3,
+.sensor-card.highlight .sensor-value,
+.sensor-card.highlight .sensor-unit {
+    color: white;
+}
+
+.sensor-card.highlight.alerta-vermelho {
+    background: linear-gradient(135deg, #f44336, #ff7961);
+    color: #fff;
+}
+
+.sensor-card.highlight.alerta-vermelho h3,
+.sensor-card.highlight.alerta-vermelho .sensor-value,
+.sensor-card.highlight.alerta-vermelho .sensor-unit {
+    color: #fff;
+}
+
+/* Indicador de Faixa */
+.range-indicator {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.range-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+.range-display.muito-seco {
+    background-color: #ffe5e5;
+    color: #d32f2f;
+}
+
+.range-display.normal {
+    background-color: #e5f5e5;
+    color: #388e3c;
+}
+
+.range-display.alerta {
+    background-color: #fff3cd;
+    color: #f57c00;
+}
+
+.range-display.critico {
+    background-color: #ffebee;
+    color: #c62828;
+    animation: alertPulse 1s infinite;
+}
+
+@keyframes alertPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+.range-icon {
+    font-size: 2rem;
+}
+
+.range-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.range-description {
+    text-align: center;
+    color: #666;
+    margin-top: 1rem;
+}
+
+/* Barra de Progresso */
+.progress-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.progress-wrapper {
+    margin-top: 1rem;
+}
+
+.progress-bar {
+    height: 30px;
+    background-color: #e0e0e0;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #ff6b6b, #ffd93d, #4ecdc4);
+    border-radius: 15px;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.progress-marker {
+    position: absolute;
+    top: -10px;
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: 3px solid #4CAF50;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    transition: left 0.5s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Botões */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Estados do botão Bluetooth */
+.btn.connecting {
+    background-color: #ffc107;
+    color: #333;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn.connecting::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+.btn.connecting:hover {
+    background-color: #ffc107;
+    transform: none;
+    cursor: wait;
+}
+
+.btn.connected {
+    background-color: #dc3545;
+}
+
+.btn.connected:hover {
+    background-color: #c82333;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+/* ========================================
+   LOCALIZAÇÃO
+   ======================================== */
+
+.location-main {
+    padding: 2rem 0;
+}
+
+.map-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.map-placeholder {
+    position: relative;
+    height: 400px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.map-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.map-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 10px;
+}
+
+.location-info {
+    margin-bottom: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.info-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.info-card h4 {
+    color: #4CAF50;
+    margin-bottom: 1rem;
+}
+
+/* Histórico */
+.readings-history {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.history-filter {
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.date-filter {
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.history-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.history-table-container {
+    overflow-x: auto;
+    max-height: 600px; /* Altura para aproximadamente 20 linhas (cabeçalho + 20 linhas de ~27px cada) */
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-top: 1rem;
+    position: relative;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    position: relative;
+}
+
+.history-table th,
+.history-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.history-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+.history-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.history-table tbody tr:hover {
+    background-color: rgba(76, 175, 80, 0.1);
+    transform: scale(1.01);
+}
+
+.status-muito-seco { color: #d32f2f; }
+.status-normal { color: #388e3c; }
+.status-alerta { color: #f57c00; }
+.status-crítico { color: #c62828; }
+
+.no-history {
+    text-align: center;
+    padding: 3rem;
+    color: #999;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Estilos customizados para a barra de rolagem do histórico */
+.history-table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.history-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.history-table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.history-table-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Para Firefox */
+.history-table-container {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+
+/* Sombra indicando mais conteúdo */
+.history-table-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.9));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.history-table-container.has-scroll::after {
+    opacity: 1;
+}
+
+/* ========================================
+   CONFIGURAÇÕES
+   ======================================== */
+
+.config-main {
+    padding: 2rem 0;
+}
+
+.config-section {
+    margin-bottom: 2rem;
+}
+
+.config-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.config-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.bluetooth-connection {
+    text-align: center;
+    padding: 20px;
+}
+
+.bluetooth-connection p {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.feedback-message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    display: none;
+    font-weight: 500;
+}
+
+.feedback-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.feedback-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.feedback-message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Formulários */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #6c757d;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.form-group:hover small {
+    color: #4CAF50;
+}
+
+.limits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Preview de Limites */
+.limits-preview {
+    margin: 2rem 0;
+}
+
+.preview-bar {
+    display: flex;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: #f5f5f5;
+}
+
+.preview-segment {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 12px;
+    padding: 5px;
+    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.preview-segment.very-dry {
+    background-color: #ff6b6b;
+}
+
+.preview-segment.normal {
+    background-color: #4ecdc4;
+}
+
+.preview-segment.critical {
+    background-color: #ff9f43;
+}
+
+.preview-segment span {
+    font-weight: bold;
+}
+
+.preview-segment small {
+    font-size: 10px;
+    opacity: 0.9;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+/* ========================================
+   GUIA
+   ======================================== */
+
+.guide-main {
+    padding: 2rem 0;
+}
+
+.guide-section {
+    margin-bottom: 3rem;
+}
+
+.section-intro {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.humidity-levels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.level-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.level-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.level-header {
+    padding: 1.5rem;
+    color: white;
+    text-align: center;
+}
+
+.level-card.very-dry .level-header { background-color: #ff6b6b; }
+.level-card.normal .level-header { background-color: #4ecdc4; }
+.level-card.alert .level-header { background-color: #ffd93d; color: #333; }
+.level-card.critical .level-header { background-color: #ff4757; }
+
+.level-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.level-range {
+    display: block;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.level-content {
+    padding: 1.5rem;
+}
+
+/* Procedimentos */
+.procedures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.procedure-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.procedure-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.procedure-card.emergency {
+    border: 2px solid #ff4757;
+}
+
+.procedure-card h4 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.procedure-card ol {
+    margin-left: 1.5rem;
+}
+
+.procedure-card li {
+    margin-bottom: 0.5rem;
+}
+
+/* Uso do Sistema */
+.usage-guide {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.usage-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.usage-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.usage-card h4 {
+    color: #4CAF50;
+    margin-bottom: 1rem;
+}
+
+/* Contatos de Emergência */
+.emergency-contacts {
+    background: #ffebee;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-top: 3rem;
+}
+
+.contacts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.contact-item {
+    background: white;
+    padding: 1rem;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* ========================================
+   COMPONENTES GERAIS
+   ======================================== */
+
+/* Botão Voltar ao Topo */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #4CAF50;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 24px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+    cursor: pointer;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background: #45a049;
+    transform: translateY(-3px);
+}
+
+/* Overlay de Alerta Crítico */
+.critical-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.critical-alert-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.critical-alert-content {
+    background: white;
+    padding: 3rem;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 500px;
+    animation: alertBounce 0.5s ease;
+}
+
+@keyframes alertBounce {
+    0% { transform: scale(0.8); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.critical-alert-content h2 {
+    color: #ff4757;
+    margin-bottom: 1rem;
+}
+
+/* Rodapé */
+.main-footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 4rem;
+}
+
+.main-footer p {
+    margin: 0.5rem 0;
+}
+
+/* ========================================
+   ANIMAÇÕES
+   ======================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   RESPONSIVIDADE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .fixed-nav .container {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    .fixed-nav h1 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .fixed-nav nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+    }
+    
+    .fixed-nav nav a {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+    
+    body {
+        padding-top: 100px;
+    }
+    
+    .section-header h2 {
+        font-size: 2rem;
+    }
+    
+    section {
+        padding: 20px 0;
+        min-height: auto;
+    }
+    
+    .sensors-grid,
+    .info-grid,
+    .humidity-levels,
+    .procedures,
+    .usage-guide {
+        grid-template-columns: 1fr;
+    }
+    
+    .sensor-value {
+        font-size: 2.5rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .history-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .control-buttons {
+        width: 100%;
+    }
+    
+    .control-buttons .btn {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .filter-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .date-filter {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .section-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .sensor-card {
+        padding: 1.5rem;
+    }
+    
+    .sensor-value {
+        font-size: 2rem;
+    }
+}
+
+/* ========================================
+   UTILITÁRIOS
+   ======================================== */
+
+.text-center { text-align: center; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+/* ========================================
+   IMPRESSÃO
+   ======================================== */
+
+@media print {
+    .fixed-nav,
+    .back-to-top,
+    .action-buttons,
+    .btn,
+    .critical-alert-overlay {
+        display: none !important;
+    }
+    
+    body {
+        padding-top: 0;
+    }
+    
+    section {
+        page-break-after: always;
+    }
+    
+    .section-header {
+        background: none !important;
+        color: black !important;
+    }
+}
+
+#floatingNotification {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 2000;
+    min-width: 280px;
+    max-width: 350px;
+    background: #4CAF50;
+    color: #fff;
+    padding: 18px 32px 18px 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s, transform 0.4s;
+    transform: translateY(-20px);
+}
+#floatingNotification.visible {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+#floatingNotification .close-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+#floatingNotification .close-btn:hover {
+    opacity: 1;
+}
+@media (max-width: 600px) {
+    #floatingNotification {
+        right: 10px;
+        left: 10px;
+        min-width: unset;
+        max-width: unset;
+        padding: 14px 16px 14px 14px;
+        font-size: 1rem;
+    }
+}
+
+/* Estilo para inputs e botão de localização manual */
+#inputLat, #inputLng {
+    width: 140px;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid #bdbdbd;
+    border-radius: 7px;
+    font-size: 1rem;
+    margin-left: 10px;
+    background: #fafbfc;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+#inputLat:focus, #inputLng:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76,175,80,0.15);
+    background: #fff;
+}
+#setLatLngBtn {
+    padding: 0.7rem 1.3rem;
+    font-size: 1rem;
+    border-radius: 7px;
+    border: none;
+    background: #fff;
+    color: #4CAF50;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(76,175,80,0.08);
+    margin-left: 10px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    border: 1.5px solid #4CAF50;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+#setLatLngBtn:hover, #setLatLngBtn:focus {
+    background: #4CAF50;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(76,175,80,0.15);
+}
+@media (max-width: 600px) {
+    #inputLat, #inputLng {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    #setLatLngBtn {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    .map-container > div[style*='display: flex'] {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+    }
+}
+
+/* Overlay de instrução para conexão Bluetooth */
+#bleInstructionOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s;
+}
+#bleInstructionOverlay.active {
+    display: flex;
+}
+.ble-instruction-content {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    padding: 2.5rem 2rem 2rem 2rem;
+    max-width: 370px;
+    text-align: center;
+    position: relative;
+    animation: alertBounce 0.5s;
+}
+.ble-instruction-content .ble-icon {
+    font-size: 3rem;
+    color: #2196f3;
+    margin-bottom: 1rem;
+    display: block;
+}
+.ble-instruction-content h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.7rem;
+}
+.ble-instruction-content p {
+    color: #555;
+    font-size: 1.08rem;
+    margin-bottom: 1.5rem;
+}
+.ble-instruction-content button {
+    background: #2196f3;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(33,150,243,0.12);
+}
+.ble-instruction-content button:hover {
+    background: #1769aa;
+}
+.ble-instruction-content .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.ble-instruction-content .close-btn:hover {
+    color: #2196f3;
+}
+
+/* Botão Bluetooth mais estilizado */
+#bleConnectButton, #bleConnectButtonConfig {
+    background: linear-gradient(90deg, #2196f3 60%, #21cbf3 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.8rem 2.2rem;
+    box-shadow: 0 2px 8px rgba(33,150,243,0.12);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+#bleConnectButton:hover, #bleConnectButtonConfig:hover {
+    background: linear-gradient(90deg, #1769aa 60%, #21cbf3 100%);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 4px 16px rgba(33,150,243,0.18);
+}
+#bleConnectButton.connected, #bleConnectButtonConfig.connected {
+    background: linear-gradient(90deg, #f44336 60%, #ff7961 100%);
+}
+#bleConnectButton.connecting, #bleConnectButtonConfig.connecting {
+    background: linear-gradient(90deg, #ff9800 60%, #ffd54f 100%);
+    color: #fff;
+}
+
+.connection-status-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 16px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    vertical-align: middle;
+}
+.connection-status-inline .status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    background: #ccc;
+    margin-right: 4px;
+    transition: background 0.3s;
+}
+.connection-status-inline .status-indicator.connected {
+    background: #4CAF50;
+}
+.connection-status-inline .status-indicator.connecting {
+    background: #ff9800;
+}
+.connection-status-inline .status-indicator.disconnected {
+    background: #f44336;
+}
+.connection-status-inline .status-indicator.error {
+    background: #f44336;
+}
+
+.header-bluetooth-group {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-left: 32px;
+}
+
+.range-indicator.muito-umido {
+    background: linear-gradient(135deg, #f44336, #ff7961);
+    color: #fff;
+}
+.range-indicator.muito-umido h3,
+.range-indicator.muito-umido .range-text,
+.range-indicator.muito-umido .range-icon {
+    color: #fff;
+}
+
+.history-table td.status-muito-umido {
+    color: #f44336;
+    font-weight: bold;
+} 
