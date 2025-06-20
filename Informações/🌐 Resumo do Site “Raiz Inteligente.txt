@@ -1,0 +1,49 @@
+🌐 Resumo do Site “Raiz Inteligente”
+📱 Tecnologias Usadas
+HTML + CSS + JavaScript
+
+Conexão via Bluetooth BLE com ESP32 usando Web Bluetooth API
+
+Design moderno com FontAwesome e Google Fonts
+
+🔧 Funcionalidades
+Conexão com o ESP32 via BLE
+
+O site escaneia e conecta ao dispositivo Bluetooth "Raiz Inteligente".
+
+Recebe dados de umidade dos dois sensores em tempo real.
+
+Exibição de dados dos sensores
+
+Mostra os valores de umidade dos dois sensores.
+
+Interpreta os dados para determinar níveis de risco (seca, normal, encharcado).
+
+Usa cores de alerta para indicar risco iminente de deslizamento.
+
+Alerta visual e sonoro
+
+Se a umidade for menor que 800, mostra alerta visual e espera que o buzzer dispare.
+
+Um botão "Desligar Alarme" envia o comando off via BLE para desligar o buzzer.
+
+Histórico visual das leituras
+
+Exibe um histórico das últimas leituras com cores baseadas no nível de umidade.
+
+Usa uma tabela ou linha do tempo para representar os últimos estados.
+
+Botão para chamar a Defesa Civil (199)
+
+Um botão simula a ligação para o número 199, direto pelo celular (usando tel:199).
+
+🎯 Conclusão
+O site é a interface visual e interativa para:
+
+Monitorar as leituras de umidade
+
+Agir rapidamente diante de riscos
+
+Registrar um pequeno histórico de dados
+
+Integrar com ações emergenciais (como a ligação)
