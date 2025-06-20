@@ -186,6 +186,15 @@ function initializeDashboard() {
         bleConnectButton: document.getElementById('bleConnectButton')
     };
     
+    // Inicializar a barra de progresso com o gradiente completo
+    if (elements.progressFill) {
+        elements.progressFill.style.width = '100%';
+        if (elements.progressMarker) {
+            elements.progressMarker.style.left = '0%';
+            elements.progressMarker.innerHTML = '<span style="font-size: 12px; font-weight: bold;">0%</span>';
+        }
+    }
+    
     // Funções do Dashboard
     window.updateDashboard = function(data) {
         // Atualizar valores e remover atributo data-empty
@@ -198,21 +207,11 @@ function initializeDashboard() {
         elements.averageValue.textContent = formatValue(data.average);
         elements.averageValue.removeAttribute('data-empty');
         
-        // Determinar faixa conforme limites do usuário
-        let limiteAlerta = 60;
-        let limiteAltoRisco = 80;
-        const saved = localStorage.getItem('raizalerta_limits');
-        if (saved) {
-            try {
-                const settings = JSON.parse(saved);
-                if (settings.limiteSeco) limiteAlerta = parseFloat(settings.limiteSeco);
-                if (settings.limiteUmido) limiteAltoRisco = parseFloat(settings.limiteUmido);
-            } catch (e) {}
-        }
+        // Determinar faixa com base no status recebido do Arduino
         let range = 'normal';
-        if (data.average >= limiteAltoRisco) {
+        if (data.status === 2) {
             range = 'alto-risco';
-        } else if (data.average >= limiteAlerta) {
+        } else if (data.status === 1) {
             range = 'alerta';
         } else {
             range = 'normal';
@@ -292,8 +291,12 @@ function initializeDashboard() {
     
     function updateProgressBar(value) {
         const percentage = Math.max(0, Math.min(100, value));
-        elements.progressFill.style.width = percentage + '%';
+        // Definir a largura do preenchimento para 100% para mostrar o gradiente completo
+        elements.progressFill.style.width = '100%';
+        // Mover apenas o marcador conforme o valor
         elements.progressMarker.style.left = percentage + '%';
+        // Adicionar o valor dentro do marcador
+        elements.progressMarker.innerHTML = `<span style="font-size: 12px; font-weight: bold;">${Math.round(value)}%</span>`;
     }
     
     function handleCriticalAlert(range) {
@@ -380,7 +383,7 @@ function addToHistory(data) {
         sensor1: data.sensor1,
         sensor2: data.sensor2,
         average: data.average,
-        status: getStatusText(data.average)
+        status: getStatusTextFromCode(data.status)
     };
     
     readingsHistory.unshift(reading);
@@ -389,25 +392,12 @@ function addToHistory(data) {
     saveHistory();
 }
 
-function getStatusText(average) {
-    // Busca limites salvos no localStorage
-    let limiteAlerta = 60;
-    let limiteAltoRisco = 80;
-    const saved = localStorage.getItem('raizalerta_limits');
-    if (saved) {
-        try {
-            const settings = JSON.parse(saved);
-            if (settings.limiteSeco) limiteAlerta = parseFloat(settings.limiteSeco);
-            if (settings.limiteUmido) limiteAltoRisco = parseFloat(settings.limiteUmido);
-        } catch (e) {}
-    }
-    
-    if (average >= limiteAltoRisco) {
-        return 'Alto Risco';
-    } else if (average >= limiteAlerta) {
-        return 'Alerta';
-    } else {
-        return 'Normal';
+function getStatusTextFromCode(statusCode) {
+    switch(statusCode) {
+        case 2: return 'Alto Risco';
+        case 1: return 'Alerta';
+        case 0:
+        default: return 'Normal';
     }
 }
 
@@ -785,7 +775,7 @@ function handleBLEData(event) {
             sensor1: parseFloat(parts[0]),
             sensor2: parseFloat(parts[1]),
             average: parseFloat(parts[2]),
-            alerta: parts[3] === '1'
+            status: parseInt(parts[3]) // 0=Normal, 1=Alerta, 2=AltoRisco
         };
         
         updateDashboard(data);
@@ -966,12 +956,13 @@ function simulateData() {
         elements.rangeDescription.textContent = 'Conecte-se ao dispositivo para ver o status atual.';
     }
     
-    // Resetar barra de progresso
+    // Inicializar barra de progresso com gradiente completo, mas marcador em 0
     if (elements.progressFill) {
-        elements.progressFill.style.width = '0%';
+        elements.progressFill.style.width = '100%';
     }
     if (elements.progressMarker) {
         elements.progressMarker.style.left = '0%';
+        elements.progressMarker.innerHTML = '<span style="font-size: 12px; font-weight: bold;">0%</span>';
     }
     
     // Resetar range indicator para classe neutra

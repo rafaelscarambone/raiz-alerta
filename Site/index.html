@@ -148,6 +148,10 @@
     <section id="dashboard">
         <div class="section-header">
             <h2>📊 Dashboard</h2>
+            <a href="tel:199" class="btn btn-emergency" onclick="return confirm('Você está prestes a ligar para a Defesa Civil (199). Deseja continuar?')">
+                <span class="btn-icon">🚨</span>
+                Ligar para Defesa Civil (199)
+            </a>
             <p>Monitoramento em tempo real dos sensores de umidade</p>
         </div>
         
@@ -202,6 +206,20 @@
                             <span>50%</span>
                             <span>75%</span>
                             <span>100%</span>
+                        </div>
+                        <div class="progress-legend">
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: #4ecdc4;"></span>
+                                <span class="legend-text">Baixa Umidade (Seguro)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: #ffd93d;"></span>
+                                <span class="legend-text">Umidade Moderada (Alerta)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: #ff6b6b;"></span>
+                                <span class="legend-text">Alta Umidade (Risco)</span>
+                            </div>
                         </div>
                     </div>
                 </div>
