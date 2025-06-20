@@ -201,18 +201,23 @@ void loop() {
     float media = (sensor1 + sensor2) / 2.0;
 
     // === Lógica de Alerta Modificada ===
-    // O alerta é true se a média estiver abaixo do limiar de alerta OU acima do limiar de muito úmido
-    bool alerta = (media < alertaThreshold || media > umidoThreshold);
-
-    // Controlar buzzer com base na lógica de alerta
-    digitalWrite(BUZZER_PIN, alerta ? HIGH : LOW);
+    // Determina o status baseado nos limiares
+    int status = 0; // 0 = Normal, 1 = Alerta, 2 = Alto Risco
+    if (media > umidoThreshold) {
+      status = 2; // Alto Risco
+    } else if (media >= alertaThreshold) {
+      status = 1; // Alerta
+    }
+    
+    // O buzzer só toca em Alto Risco
+    digitalWrite(BUZZER_PIN, status == 2 ? HIGH : LOW);
 
     // Criar string de dados a ser enviada via BLE
-    // Formato: UmidadeSensor1,UmidadeSensor2,Media,StatusAlerta(0=Normal, 1=Alerta)
+    // Formato: UmidadeSensor1,UmidadeSensor2,Media,Status(0=Normal,1=Alerta,2=AltoRisco)
     String dados = String(sensor1, 1) + "," +
                    String(sensor2, 1) + "," +
                    String(media, 1) + "," +
-                   String(alerta ? 1 : 0); // 1 se estiver em alerta, 0 caso contrário
+                   String(status); // Envia o código de status
 
     // Enviar via BLE usando a característica de dados
     pDataCharacteristic->setValue(dados.c_str());
