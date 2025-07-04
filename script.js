@@ -1,41 +1,32 @@
-/**
- * RaizAlerta - Script Unificado
- * Combina todas as funcionalidades do sistema em um único arquivo
- */
 
-// ========================================
-// CONFIGURAÇÕES E VARIÁVEIS GLOBAIS
-// ========================================
 
-// UUIDs do serviço BLE (Arduino)
+
 const SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 const DATA_CHARACTERISTIC_UUID = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
 const SECO_THRESHOLD_CHARACTERISTIC_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914c';
 const UMIDO_THRESHOLD_CHARACTERISTIC_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914d';
 
-// Variáveis globais BLE
+
 let bleDevice = null;
 let bleServer = null;
 let bleService = null;
 let bleDataCharacteristic = null;
-let secoThresholdCharacteristic = null; // Agora representa o limiar de Alerta
-let umidoThresholdCharacteristic = null; // Agora representa o limiar de Alto Risco
+let secoThresholdCharacteristic = null;
+let umidoThresholdCharacteristic = null;
 
-// Variáveis do Dashboard
+
 let autoUpdateInterval = null;
 let isAutoUpdating = false;
 let criticalAlertActive = false;
 
-// Variáveis do histórico
-let readingsHistory = [];
-// Removido limite de itens no histórico
 
-// Variável global para instância do mapa
+let readingsHistory = [];
+
+
+
 let userMapInstance = null;
 
-// ========================================
-// INICIALIZAÇÃO
-// ========================================
+
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('RaizAlerta - Sistema Iniciado');
