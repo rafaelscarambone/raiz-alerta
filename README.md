@@ -47,4 +47,6 @@ O projeto Raiz Alerta foi concebido para ser implementado rapidamente e de forma
 *   Um README detalhado (este que você está lendo!).
 *   Checklist de deploy para facilitar a instalação em novas localidades.
 
+Acesse nosso site em https://rafaelscarambone.github.io/raiz-alerta/
+
 Estamos animados com o potencial do Raiz Alerta em fornecer segurança e tranquilidade para comunidades vulneráveis. Convidamos você a explorar o código, testar a solução e contribuir para este projeto que pode realmente fazer a diferença.
