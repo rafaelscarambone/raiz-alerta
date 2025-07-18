@@ -48,11 +48,3 @@ O projeto Raiz Alerta foi concebido para ser implementado rapidamente e de forma
 *   Checklist de deploy para facilitar a instalação em novas localidades.
 
 Estamos animados com o potencial do Raiz Alerta em fornecer segurança e tranquilidade para comunidades vulneráveis. Convidamos você a explorar o código, testar a solução e contribuir para este projeto que pode realmente fazer a diferença.
-
-## 📂 Estrutura do Projeto
-raiz-alerta/
-firmware/ # Código para o ESP32 (Arduino IDE ou ESP-IDF)
-frontend/ # Código do Dashboard Web 
-docs/ # Documentação adicional, diagramas, etc.
-tests/ # Arquivos de testes
-README.md # Este arquivo
