@@ -2,14 +2,14 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-#include <string>   // Necessário para std::string
-#include <stdexcept> // Necessário para std::stof e exceções
+#include <string>   
+#include <stdexcept> 
 
 // UUIDs únicos para o serviço
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 // UUID da característica de dados de sensores
 #define DATA_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-// UUID da característica para configurar o limite de umidade 'Alerta' (era 'Muito Seco')
+// UUID da característica para configurar o limite de umidade 'Alerta'
 #define ALERTA_THRESHOLD_CHARACTERISTIC_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914c" // Novo UUID
 // UUID da característica para configurar o limite de umidade 'Muito Úmido'
 #define UMIDO_THRESHOLD_CHARACTERISTIC_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914d" // Mantido
@@ -32,10 +32,9 @@ const int BUZZER_PIN = 32;
 const int SECO_ADC = 4095;
 const int MOLHADO_ADC = 0;
 
-// Limiares de Umidade Configuráveis (Valores Iniciais)
-// O alarme dispara se a umidade for menor que alertaThreshold ou maior que umidoThreshold
-float alertaThreshold = 60.0; // Limiar para "Alerta" (%)
-float umidoThreshold = 80.0; // Limiar para "Muito Úmido" (%)
+// Valores Iniciais
+float alertaThreshold = 60.0; // Limitar para "Alerta" (%)
+float umidoThreshold = 80.0; // Limitar para "Muito Úmido" (%)
 
 
 // Variáveis de tempo para envio de dados
@@ -52,8 +51,7 @@ class MyServerCallbacks: public BLEServerCallbacks {
     void onDisconnect(BLEServer* pServer) {
       deviceConnected = false;
       Serial.println("Dispositivo desconectado!");
-      // Reinicia a publicidade após um pequeno delay
-      delay(500); // Delay para permitir que o cliente se desconecte totalmente
+      delay(500); // Delay
       pServer->startAdvertising();
       Serial.println("Reiniciando advertising...");
     }
@@ -127,9 +125,9 @@ void setup() {
   pDataCharacteristic = pService->createCharacteristic(
                       DATA_CHARACTERISTIC_UUID,
                       BLECharacteristic::PROPERTY_READ   |
-                      BLECharacteristic::PROPERTY_WRITE  | // Mantido WRITE, embora não usado no seu loop atual
+                      BLECharacteristic::PROPERTY_WRITE  | 
                       BLECharacteristic::PROPERTY_NOTIFY |
-                      BLECharacteristic::PROPERTY_INDICATE // Indicate é mais confiável que notify
+                      BLECharacteristic::PROPERTY_INDICATE 
                     );
   pDataCharacteristic->addDescriptor(new BLE2902());
 
@@ -141,7 +139,6 @@ void setup() {
                     );
   pAlertaThresholdCharacteristic->addDescriptor(new BLE2902());
   pAlertaThresholdCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
-  // Define o valor inicial na característica para que possa ser lido pelo cliente
   pAlertaThresholdCharacteristic->setValue(String(alertaThreshold).c_str());
 
 
@@ -200,7 +197,6 @@ void loop() {
     float sensor2 = lerSensor(SENSOR2_PIN);
     float media = (sensor1 + sensor2) / 2.0;
 
-    // === Lógica de Alerta Modificada ===
     // Determina o status baseado nos limiares
     int status = 0; // 0 = Normal, 1 = Alerta, 2 = Alto Risco
     if (media > umidoThreshold) {
@@ -213,7 +209,6 @@ void loop() {
     digitalWrite(BUZZER_PIN, status == 2 ? HIGH : LOW);
 
     // Criar string de dados a ser enviada via BLE
-    // Formato: UmidadeSensor1,UmidadeSensor2,Media,Status(0=Normal,1=Alerta,2=AltoRisco)
     String dados = String(sensor1, 1) + "," +
                    String(sensor2, 1) + "," +
                    String(media, 1) + "," +
@@ -221,7 +216,6 @@ void loop() {
 
     // Enviar via BLE usando a característica de dados
     pDataCharacteristic->setValue(dados.c_str());
-    // Usar notify para enviar dados para clientes inscritos
     // Se INDICATE estivesse sendo usado, seria pDataCharacteristic->indicate();
     pDataCharacteristic->notify();
 
@@ -229,6 +223,5 @@ void loop() {
     Serial.printf("Limiares atuais: Alerta=%.1f%%, Muito Úmido=%.1f%%\n", alertaThreshold, umidoThreshold);
   }
 
-  // Pequeno delay para o loop não rodar excessivamente rápido
   delay(10);
 }

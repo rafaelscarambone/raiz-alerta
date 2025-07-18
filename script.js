@@ -101,9 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// ========================================
 // NAVEGAÇÃO E UI
-// ========================================
 
 function initializeNavigation() {
     const navLinks = document.querySelectorAll('.nav-link');
@@ -158,9 +156,7 @@ function initializeNavigation() {
     });
 }
 
-// ========================================
 // MÓDULO DASHBOARD
-// ========================================
 
 function initializeDashboard() {
     // Elementos do Dashboard
@@ -326,9 +322,8 @@ function initializeDashboard() {
     }
 }
 
-// ========================================
 // MÓDULO LOCALIZAÇÃO
-// ========================================
+
 
 function initializeLocation() {
     const clearHistoryBtn = document.getElementById('clearHistoryBtn');
@@ -521,9 +516,7 @@ function downloadHistoryCSV() {
     showFeedback(`Histórico exportado: ${fileName}`, 'success');
 }
 
-// ========================================
 // MÓDULO CONFIGURAÇÕES
-// ========================================
 
 function initializeConfig() {
     const elements = {
@@ -706,9 +699,7 @@ function loadLocalSettings() {
     }
 }
 
-// ========================================
 // BLUETOOTH
-// ========================================
 
 async function connectBLE(autoReconnect = false) {
     // Se já estiver conectado, desconecta
@@ -891,9 +882,7 @@ function updateConnectionStatus(status) {
     updateBLEStatus(status);
 }
 
-// ========================================
 // DADOS E SIMULAÇÃO
-// ========================================
 
 function updateData() {
     if (bleDevice && bleDevice.gatt.connected) {
@@ -969,9 +958,7 @@ function loadSavedData() {
     loadHistory();
 }
 
-// ========================================
 // FUNÇÕES GLOBAIS
-// ========================================
 
 // Exporta funções para uso global
 window.loadCurrentLimits = loadCurrentLimits;
